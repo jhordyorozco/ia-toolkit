@@ -1,5 +1,5 @@
-const fs = require('fs/promises');
 const path = require('path');
+const { leerPdf } = require('./pdf-service.js');
 
 module.exports = class OCRService {
   constructor() {
@@ -22,7 +22,7 @@ module.exports = class OCRService {
   }
 
   async ejecutarOCR(url, archivo) {
-    const buffer = await fs.readFile(archivo);
+    const buffer = await leerPdf(archivo);
     const nombre = path.basename(archivo);
     const form = new FormData();
 

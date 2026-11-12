@@ -5,7 +5,7 @@ Lee los PDF de `input/`, extrae su texto con Vast.ai, guarda en ChromaDB un embe
 ## Qué hace cada archivo
 
 - **`index.js`** coordina los servicios y escribe un JSON por PDF después de guardarlo en ChromaDB.
-- **`services/pdf-service.js`** lista los PDF de `input/` o selecciona el que indiques por nombre.
+- **`services/pdf-service.js`** busca PDF en `input/` y sus subcarpetas, permite seleccionar un archivo o una carpeta y comprueba el máximo de 12 páginas por PDF.
 - **`services/vastai-service.js`** localiza la instancia activa de Vast.ai y devuelve la dirección del OCR.
 - **`services/ocr-service.js`** comprueba que el OCR esté listo, envía el PDF y devuelve el texto extraído.
 - **`services/parrafos.js`** separa los bloques del OCR y quita sus etiquetas y coordenadas. También admite texto con saltos de línea.
@@ -17,7 +17,7 @@ Lee los PDF de `input/`, extrae su texto con Vast.ai, guarda en ChromaDB un embe
 
 - **`.env`** guarda las claves locales de Vast.ai, del OCR y de OpenAI.
 - **`.env.example`** muestra los nombres de las variables para crear un `.env` en otro equipo.
-- **`package.json`** declara los paquetes que importan los servicios de OpenAI y ChromaDB.
+- **`package.json`** declara las dependencias de OpenAI, ChromaDB y la lectura de PDF.
 - **`package-lock.json`** registra las versiones exactas para que `npm ci` pueda reinstalar las mismas dependencias.
 
 ## Arranque
@@ -30,7 +30,7 @@ Desde `rag-test`, instala las dependencias la primera vez.
 npm ci
 ```
 
-Pon el PDF en `input/`. Si aún no tienes un `.env`, copia `.env.example` a `.env` y completa `VAST_API_KEY`, `OCR_API_KEY` y `OPENAI_API_KEY`.
+Pon los PDF o sus carpetas en `input/`. Cada PDF puede tener hasta **12 páginas**. Si aún no tienes un `.env`, copia `.env.example` a `.env` y completa `VAST_API_KEY`, `OCR_API_KEY` y `OPENAI_API_KEY`.
 
 ### 2. Arrancar ChromaDB desde Antigravity
 
@@ -66,7 +66,13 @@ Con ChromaDB y Vast.ai en marcha, ejecuta desde `rag-test` el comando con el nom
 node --env-file=.env index.js "boib.pdf"
 ```
 
-Para procesar todos los PDF de `input/`, ejecuta `node --env-file=.env index.js`.
+Para procesar todos los PDF de una carpeta, pasa su ruta relativa a `input/`.
+
+```powershell
+node --env-file=.env index.js "facturas"
+```
+
+Para seleccionar un solo PDF de esa carpeta, usa `"facturas/enero.pdf"`. Al ejecutar `node --env-file=.env index.js`, se procesan todos los PDF de `input/` y sus subcarpetas.
 
 ## Resultado
 
@@ -78,7 +84,7 @@ Para `input/boib.pdf`, se genera `output/boib.pdf.json` con una entrada por bloq
 - **`palabrasClave`** contiene las palabras clave de Luna.
 - **`embedding`** contiene el vector generado a partir de esas palabras clave.
 
-Si vuelves a procesar un PDF con el mismo nombre, se actualizan sus registros y su JSON.
+Para `input/facturas/enero.pdf`, el resultado se guarda en `output/facturas/enero.pdf.json` y el primer ID es `facturas/enero.pdf:1`. Si vuelves a procesar un PDF con la misma ruta relativa, se actualizan sus registros y su JSON.
 
 
 Consultar desde ChromaDB por terminal

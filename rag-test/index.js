@@ -5,7 +5,7 @@ const OCRService = require('./services/ocr-service.js');
 const OpenAIService = require('./services/openai-service.js');
 const VastAIService = require('./services/vastai-service.js');
 const VectorService = require('./services/vector-service.js');
-const listarPdfs = require('./services/pdf-service.js');
+const { listarPdfs } = require('./services/pdf-service.js');
 const separarParrafos = require('./services/parrafos.js');
 const extraerPalabrasClave = require('./services/palabras-clave.js');
 
@@ -32,6 +32,10 @@ async function main() {
     await vectores.conectar();
 
     for (const archivo of archivosPdf) {
+      const rutaJson = path.join(carpetaSalida, `${archivo}.json`);
+      const directorioSalida = path.dirname(rutaJson);
+      await fs.mkdir(directorioSalida, { recursive: true });
+
       const resultado = await ocr.ejecutarOCR(url, path.join(carpetaEntrada, archivo));
       const parrafos = separarParrafos(resultado.text);
       if (!parrafos.length) {
@@ -55,8 +59,7 @@ async function main() {
         console.log('Dimensiones del embedding:', embedding.length);
       }
 
-      const rutaJson = path.join(carpetaSalida, `${archivo}.json`);
-      const temporal = path.join(carpetaSalida, `${randomUUID()}.tmp`);
+      const temporal = path.join(directorioSalida, `${randomUUID()}.tmp`);
       try {
         await fs.writeFile(temporal, JSON.stringify(registros, null, 2), 'utf8');
         await vectores.guardarParrafos(archivo, registros);

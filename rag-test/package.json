@@ -4,6 +4,7 @@
   "type": "commonjs",
   "dependencies": {
     "chromadb": "^3.0.0",
-    "openai": "^6.0.0"
+    "openai": "^6.0.0",
+    "pdf-lib": "^1.17.1"
   }
 }
