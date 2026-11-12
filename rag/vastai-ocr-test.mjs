@@ -1,3 +1,4 @@
+
 /* node --env-file=.env vastai-ocr-test.mjs "documento.pdf" */
 
 import fs from 'node:fs/promises';
@@ -6,8 +7,6 @@ import path from 'node:path';
 const VAST_API_KEY = process.env.VAST_API_KEY;
 const OCR_API_KEY = process.env.OCR_API_KEY;
 const VAST_INSTANCE_ID = process.env.VAST_INSTANCE_ID;
-
-/* Seleccionar todos los archivos de la carpeta salida y guardarlo en una variable llamada archivos */
 const archivo = process.argv[2];
 
 async function obtenerServidorOCR() {
@@ -21,11 +20,11 @@ async function obtenerServidorOCR() {
   );
 
   if (!response.ok) {
-    const detalle = await response.text();
-    throw new Error(
-      `Vast.ai HTTP ${response.status}: ${detalle}`
-    );
-  }
+  const detalle = await response.text();
+  throw new Error(
+    `Vast.ai HTTP ${response.status}: ${detalle}`
+  );
+}
 
   const data = await response.json();
 
@@ -134,8 +133,6 @@ async function ejecutarOCR(url, archivo) {
   console.log('\n===== TEXTO =====\n');
   console.log(resultado.text);
 
-  /* En vez de guardarlo como resultado-ocr.txt se llamará como el nombre del archivo pdf y guardalo en una carpeta llamada resultado*/
-
   await fs.writeFile('resultado-ocr.txt', resultado.text);
   await fs.writeFile(
     'resultado-ocr.json',
@@ -152,7 +149,6 @@ async function main() {
 
   await comprobarModelo(url);
 
-  /*Bucle sobre archivos lanzando esta funcion*/
   await ejecutarOCR(url, archivo);
 }
 
