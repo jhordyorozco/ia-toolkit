@@ -1,0 +1,7 @@
+node_modules/
+.chroma/
+.env
+.env.*
+!.env.example
+input/
+output/
