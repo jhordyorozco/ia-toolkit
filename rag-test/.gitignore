@@ -1,7 +1,5 @@
-node_modules/
-.chroma/
+/node_modules
+/input
+/output
 .env
-.env.*
-!.env.example
-input/
-output/
+package-lock.json
