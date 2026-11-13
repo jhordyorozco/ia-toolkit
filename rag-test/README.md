@@ -113,3 +113,13 @@ console.table(resultado.metadatas.map((meta, i) => ({
   dimensiones: resultado.embeddings[i]?.length
 })));
 '@ | node --input-type=module - -->
+
+
+
+Esto va adentro de .env
+
+<!-- OPENAI_API_KEY=
+OPENAI_KEYWORD_MODEL=gpt-6-luna
+OPENAI_EMBEDDING_MODEL=text-embedding-3-large
+VAST_API_KEY=
+OCR_API_KEY= -->
